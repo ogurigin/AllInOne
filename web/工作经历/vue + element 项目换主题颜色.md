@@ -1,0 +1,48 @@
+### **此项目 使用vue-cli4  + scss**
+
+1. 先 考虑element 内部组件的皮肤切换
+    
+    组件地址：
+    
+    [**https://github.com/PanJiaChen/vue-element-admin/blob/master/src/components/ThemePicker/index.vue**](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/components/ThemePicker/index.vue)
+    
+    可以配合下面的 只定义几种主题提供切换。适当修改组件即可 
+    
+    问题：只能切换 组件基础的颜色，不能自定义。 因为有 XMLHttpRequest 跨域的问题，所以ie9不支持。⇒ 可以尝试将请求文件 放到自己的服务器上 
+    
+2. 其他自定义的组件 。
+    
+    首先创建 theme.scss
+    
+    ```js
+    //定义自己想要的主题颜色
+    //默认 
+    $orange-theme : (
+      base-color: #FF6600,
+    );
+    //蓝色主题
+    $blue-theme : (
+      base-color: #409EFF,
+    );
+    
+    //定义映射集合
+    $themes: (
+      default-theme: $default-theme,
+      blue-theme: $blue-theme,
+    );
+    // 获取基础的背景颜色  可以自定义 
+    @mixin base-background(){
+        @each $themename , $theme in $themes {
+            [data-theme = '#{$themename}'] & {
+                background: map-get($map: $theme, $key: base-color ),
+            }
+        }
+    }
+  
+    ```
+    
+    在需要切换的地方 使用  @include base-background() 为该元素定义背景颜色
+    
+    使用vuex 的情况下  添加 储存 修改 主题的字段即可 （自己写 最好添加localStorage 存储  避免一刷新主题色就恢复默认
+    
+    并在 app.vue 最外层 div元素上添加 :data-theme='主题名称 —一般是getter获取'
